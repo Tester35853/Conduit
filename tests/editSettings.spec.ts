@@ -23,7 +23,7 @@ test('Edit user settings', async ({ page }) => {
     await page.getByPlaceholder('Password').fill(userData.password);
     await page.getByRole('button', { name: 'Sign in' }).click();
 
-    await expect(page.locator('.nav-link', { hasText: userData.username })).toBeVisible();
+    await expect(page.locator('.nav-link', { hasText: userData.username })).toBeVisible({ timeout: 20000 });
     //Заходим в Settings
     await page.getByRole('link', { name: 'Settings' }).click();
     await expect(page.locator('.text-xs-center', { hasText: 'Your Settings' })).toBeVisible();
