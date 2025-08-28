@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "npx playwright test",
     "invalideSignUpAndSignIn": "npx playwright test tests/InvalideSignUpAndSignIn.spec.ts --project=chromium"
   },
   "keywords": [],
