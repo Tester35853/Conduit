@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import * as fs from 'fs';
+import * as path from 'path';
 
 
 test.beforeEach('Link Conduit', async ({page}) =>{
@@ -50,12 +51,17 @@ while (attempts < maxAttempts) {
 
     await expect(page.locator('.nav-link', { hasText: username })).toBeVisible();
 
-    const userData = { username, email, password };
-    fs.writeFileSync('.auth/validUser.json', JSON.stringify(userData, null, 2), 'utf-8');
+    const userData = {
+        username,
+        email,
+        password
+    };
+    const filePath = path.resolve(__dirname, '../.auth/validUser.json');
+    fs.writeFileSync(filePath, JSON.stringify(userData, null, 2), 'utf-8');
 }); 
 
 test('Invalid sign in', async ({ page }) => {
-    const userData = JSON.parse(fs.readFileSync('.auth/validUser.json', 'utf-8'));
+    const userData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../.auth/validUser.json'), 'utf-8'));
 
     await page.getByRole('link', { name: 'Sign in' }).click();
     await page.getByPlaceholder('Email').fill('123@test.com');
