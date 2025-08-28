@@ -37,7 +37,7 @@ test('Create and delete article', async ({ page }) => {
     await homeLink.click();
     await expect(page.locator('app-article-preview a.author', { hasText: username })).toBeVisible();
     await page.waitForTimeout(1000);
-    await expect(page.locator('.tag-list .tag-default.tag-pill', { hasText: tags })).toBeVisible();
+    await expect(page.locator('.tag-list .tag-default.tag-pill', { hasText: tags }).first()).toBeVisible();
 
     await page.getByRole('link', {name: ' New Article '}).click();
 
