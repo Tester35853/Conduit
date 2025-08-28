@@ -8,6 +8,8 @@ test.beforeEach('Link Conduit', async ({page}) =>{
     await page.goto('https://conduit.bondaracademy.com/') 
 });
 
+
+
 test('Invalid sign up', async ({ page }) => {
     let username = faker.string.alpha({ length: 1 }); // username длиной 1 символ
     let email = faker.string.alpha({ length: 8 }); // email без @

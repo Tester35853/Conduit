@@ -7,11 +7,14 @@ test.beforeEach('Link Conduit', async ({page}) =>{
     await page.goto('https://conduit.bondaracademy.com/') 
 });
 
+
+
 test('Edit user settings', async ({ page }) => {
+    // Сначала читаем валидные данные
+    const filePath = path.resolve(__dirname, '../.auth/validUser.json');
     const editPath = path.resolve(__dirname, '../.auth/editUser.json');
-    const validPath = path.resolve(__dirname, '../.auth/validUser.json');
-    const userFile = fs.existsSync(editPath) ? editPath : validPath;
-    const userData = JSON.parse(fs.readFileSync(userFile, 'utf-8'));
+    const userData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    let userData2: any = undefined;
     const image = 'https://s1.iconbird.com/ico/1012/QettoIcons/w256h2561350658940jpg.png'
     const editUsername = faker.internet.username();
     const bio = faker.lorem.sentence();
@@ -22,8 +25,23 @@ test('Edit user settings', async ({ page }) => {
     await page.getByPlaceholder('Email').fill(userData.email);
     await page.getByPlaceholder('Password').fill(userData.password);
     await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.waitForTimeout(1000);
 
-    await expect(page.locator('.nav-link', { hasText: userData.username })).toBeVisible({ timeout: 20000 });
+    // Проверяем, открыт ли профиль с юзернеймом
+    if (await page.locator('.nav-link', { hasText: userData.username }).first().isVisible()) {
+        // Переходим в настройки
+        await page.getByRole('link', { name: 'Settings' }).click();
+    } else if (await page.locator('.error-messages').isVisible()) {
+        // Если есть сообщение об ошибке, пробуем другие данные
+        const userData2 = JSON.parse(fs.readFileSync(editPath, 'utf-8'));
+        await page.getByPlaceholder('Email').fill(userData2.email);
+        await page.getByPlaceholder('Password').fill(userData2.password);
+        await page.getByRole('button', { name: 'Sign in' }).click();
+        // Проверяем, что теперь профиль открыт
+        await expect(page.locator('.nav-link', { hasText: userData2.username }).first()).toBeVisible();
+        await page.getByRole('link', { name: 'Settings' }).click();
+    }
+    
     //Заходим в Settings
     await page.getByRole('link', { name: 'Settings' }).click();
     await expect(page.locator('.text-xs-center', { hasText: 'Your Settings' })).toBeVisible();
@@ -51,5 +69,6 @@ test('Edit user settings', async ({ page }) => {
     await page.getByPlaceholder('Email').fill(editEmail);
     await page.getByPlaceholder('Password').fill(editPassword);
     await page.getByRole('button', { name: 'Sign in' }).click();
-    await expect(page.locator('.nav-link', { hasText: editUsername })).toBeVisible();
+    // Проверяем, что имя пользователя обновилось и отображается в навигации
+    await expect(page.locator('.nav-link').filter({ hasText: editUsername })).toBeVisible();
 });
