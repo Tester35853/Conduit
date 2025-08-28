@@ -1,18 +1,19 @@
 import { expect, test } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import * as fs from 'fs';
+import * as path from 'path';
 
 test.beforeEach('Link Conduit', async ({page}) =>{
     await page.goto('https://conduit.bondaracademy.com/') 
 });
 
 test('Edit user settings', async ({ page }) => {
-    const userFile = fs.existsSync('.auth/editUser.json')
-    ? '.auth/editUser.json'
-    : '.auth/validUser.json';
+    const editPath = path.resolve(__dirname, '../.auth/editUser.json');
+    const validPath = path.resolve(__dirname, '../.auth/validUser.json');
+    const userFile = fs.existsSync(editPath) ? editPath : validPath;
     const userData = JSON.parse(fs.readFileSync(userFile, 'utf-8'));
     const image = 'https://s1.iconbird.com/ico/1012/QettoIcons/w256h2561350658940jpg.png'
-    const editUsername = faker.internet.userName();
+    const editUsername = faker.internet.username();
     const bio = faker.lorem.sentence();
     const editEmail = faker.internet.email();
     const editPassword = faker.internet.password();
