@@ -35,8 +35,5 @@ Playwright End-to-End Tests for Conduit
 ### Контакты
 
 Если у вас есть вопросы или предложения, свяжитесь со мной:
-- Email: ### Контакты
-
-Если у вас есть вопросы или предложения, свяжитесь со мной:
 - Email: crm.35853@gmail.com
 - Telegram: @Evgeniy_id949
